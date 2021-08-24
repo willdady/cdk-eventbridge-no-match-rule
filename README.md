@@ -6,6 +6,8 @@ This works by creating a rule which matches on **all** events and forwards the e
 
 Note you must instantiate `NoMatchRule` at most **once** for a given event bus.
 
+![Architecture diagram](./diagram.png)
+
 ## Commands
 
 - `npm run build` compile typescript to js
