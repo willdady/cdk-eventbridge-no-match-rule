@@ -33,12 +33,16 @@ export class NoMatchRule extends cdk.Construct {
     props.queue.grantSendMessages(func);
 
     const ruleName = `${id}CatchAllRule`;
-    new events.Rule(this, 'Rule', {
+    const rule = new events.Rule(this, 'Rule', {
       ruleName: ruleName,
       eventBus: props.eventBus,
-      eventPattern: { source: [JSON.stringify({ prefix: '' })] },
+      eventPattern: { source: [''] }, // NOTE: This is overridden below
       targets: [new eventsTargets.LambdaFunction(func)],
     });
+    // This is a workaround to this issue: https://github.com/aws/aws-cdk/issues/6184
+    (rule.node.defaultChild as events.CfnRule).eventPattern = {
+      source: [{ prefix: '' }],
+    };
 
     func.addEnvironment('SOURCE_RULE_NAME', ruleName);
   }
