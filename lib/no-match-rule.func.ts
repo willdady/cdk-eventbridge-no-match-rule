@@ -26,6 +26,10 @@ export const handler = async (event: any) => {
     for (const rule of response.Rules || []) {
       // We ignore the rule targeting this Lambda function
       if (rule.Name === SOURCE_RULE_NAME!) continue;
+      // Ignore disabled rules
+      if (rule.State !== 'ENABLED') continue;
+      // Ignore managed rules
+      if (rule.ManagedBy) continue;
       // Check if rule matches event
       const response = await eventsClient.send(
         new TestEventPatternCommand({
